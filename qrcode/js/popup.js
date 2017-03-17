@@ -11,52 +11,66 @@ $(function () {
         imageSize: 300
     };
 
-    chrome.storage.local.get(['configs', 'ip'], function(result) {
-        var configs = $.extend({}, defaultConfigs, result.configs);
+    try {
+        chrome.storage.local.get(['configs', 'ip'], function(result) {
+            var configs = $.extend({}, defaultConfigs, result.configs);
 
-        chrome.tabs.getSelected(null, function(tab) {
-            var url = tab.url;
+            chrome.tabs.getSelected(null, function(tab) {
+                var url = tab.url;
 
-            if (configs.switch == '1') {
-                if (configs.autoip == '1') {
-                    var now = new Date().getTime();
-                    if (!result.ip || !result.ip.value || result.ip.expire < now) {
-                        window.getLocalIP(function (ip) {
-                            configs.target = configs.target || ip;
-                            result.ip = {
-                                value: ip,
-                                expire: now + 600000    // cache ip for ten minutes
-                            };
+                if (configs.switch == '1') {
+                    if (configs.autoip == '1') {
+                        var now = new Date().getTime();
+                        if (!result.ip || !result.ip.value || result.ip.expire < now) {
+                            window.getLocalIP(function (ip) {
+                                configs.target = configs.target || ip;
+                                result.ip = {
+                                    value: ip,
+                                    expire: now + 600000    // cache ip for ten minutes
+                                };
 
-                            chrome.storage.local.set({
-                                ip: result.ip,
-                                configs: result.configs
+                                chrome.storage.local.set({
+                                    ip: result.ip,
+                                    configs: result.configs
+                                });
+
+                                url = replaceUrl(url, configs.match, ip);
+                                createQR($el, url, configs);
                             });
-
-                            url = replaceUrl(url, configs.match, ip);
+                        } else {
+                            url = replaceUrl(url, configs.match, result.ip.value);
                             createQR($el, url, configs);
-                        });
+                        }
                     } else {
-                        url = replaceUrl(url, configs.match, result.ip.value);
+                        url = replaceUrl(url, configs.match, configs.target);
                         createQR($el, url, configs);
                     }
                 } else {
-                    url = replaceUrl(url, configs.match, configs.target);
                     createQR($el, url, configs);
                 }
-            } else {
-                createQR($el, url, configs);
-            }
+            });
+
+            // events
+            $('.button[data-action=generate]').on('click', function () {
+                var url = $url.val();
+                if (url) {
+                    createQR($el, url, configs);
+                }
+            });
         });
+    } catch (e) {
+        var url = window.location.href;
+        $url.val(url);
+        createQR($el, url, defaultConfigs);
 
         // events
         $('.button[data-action=generate]').on('click', function () {
             var url = $url.val();
             if (url) {
-                createQR($el, url, configs);
+                createQR($el, url, defaultConfigs);
             }
         });
-    });
+    }
 
     function replaceUrl(url, match, ip) {
         match.forEach(function (item) {

@@ -27,6 +27,16 @@ $(function () {
         saveConfigs();
     });
 
+    $('#back').on('click', function () {
+        window.history.back();
+    });
+
+    // init
+    var search = window.location.search;
+    if (~search.indexOf('from=qrcode')) {
+        $('#back').show();
+    }
+
     try {
         chrome.storage.local.get(['configs', 'ip'], function(result) {
             var configs = $.extend({}, defaultConfigs, result.configs);

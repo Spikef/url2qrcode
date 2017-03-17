@@ -33,3 +33,11 @@ form {
 .save-success {
     display: none;
 }
+
+#back {
+    cursor: pointer;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 10px;
+    display: none;
+}

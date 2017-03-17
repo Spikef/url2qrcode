@@ -3,6 +3,10 @@ html, body {
     padding: 0;
 }
 
+section {
+    width: 350px;
+}
+
 .qrcode {
     width: 300px;
     height: 300px;
@@ -25,4 +29,19 @@ html, body {
 
 .button:last-child {
     margin-bottom: 25px;
+}
+
+.tools {
+    padding: 20px 25px;
+    font-size: 0;
+}
+
+.tools .tool {
+    display: inline-block;
+    width: 50%;
+}
+
+.tools a {
+    cursor: pointer;
+    font-size: 12px;
 }
