@@ -1,0 +1,28 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.qrcode {
+    width: 300px;
+    height: 300px;
+    margin: 25px 25px 25px 25px
+}
+
+.qrcode-image {
+    display: none;
+}
+
+.url {
+    width: 300px;
+    margin: 0 25px;
+}
+
+.button {
+    width: 300px;
+    margin: 15px 25px 0 25px;
+}
+
+.button:last-child {
+    margin-bottom: 25px;
+}

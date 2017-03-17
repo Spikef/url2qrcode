@@ -1,0 +1,35 @@
+form {
+    margin: 15px;
+    width: 520px;
+}
+
+#transparent {
+    cursor: pointer;
+}
+
+.select-color {
+    cursor: pointer;
+}
+
+.select-color i {
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    vertical-align: text-top;
+}
+
+.select-color.fore i {
+    background-color: #000000;
+}
+
+.select-color.back i {
+    background-color: #ffffff;
+}
+
+.button {
+    margin-right: 10px;
+}
+
+.save-success {
+    display: none;
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <link rel="stylesheet" href="../css/colorpicker.css">
+    <link rel="stylesheet" href="../css/options.css">
+</head>
+<body>
+
+<section>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label for="color" class="col-sm-2 control-label">颜色</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="color" placeholder="#000000">
+                    <span class="input-group-addon select-color fore"><i></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="backColor" class="col-sm-2 control-label">背景色</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="backColor" placeholder="#ffffff">
+                    <span class="input-group-addon select-color back"><i></i></span>
+                </div>
+                <p class="help-block">如果需要透明背景，则设置为<span class="text-warning" id="transparent">transparent</span>.</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="switch"> 自动转换本地ip地址
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div id="switch-options">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">转换结果</label>
+                <div class="col-sm-10">
+                    <label class="radio-inline">
+                        <input type="radio" name="autoip" value="0"> 使用指定的输入文本
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="autoip" value="1"> 自动侦测本机ip地址
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group" id="replacement">
+                <label for="target" class="col-sm-2 control-label">转换文本</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="target" placeholder="当选择[使用指定的输入文本]时的文本内容">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="match" class="col-sm-2 control-label">匹配地址</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" rows="5" id="match" placeholder="可输入多个待转换的地址，每行一个"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-success button" id="save">保存修改设置</button>
+                <button type="button" class="btn btn-danger button" id="reset">初始化全部设置</button>
+                <p class="help-block text-success save-success">保存成功!</p>
+            </div>
+        </div>
+    </form>
+</section>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/ip.js"></script>
+<script src="../js/colorpicker.js"></script>
+<script src="../js/options.js"></script>
+</body>
+</html>
