@@ -1,85 +1,30 @@
-;(function () {
-    //get the IP addresses associated with an account
-    var getIPs = function (callback){
-        var ip_dups = {};
+;(function (window) {
+    window.getLocalIP = function getLocalIP(callback) {
+        var ips = [];
 
-        //compatibility for firefox and chrome
-        var RTCPeerConnection = window.RTCPeerConnection
-            || window.mozRTCPeerConnection
-            || window.webkitRTCPeerConnection;
-        var mediaConstraints = {
-            optional: [{RtpDataChannels: true}]
-        };
-
-        //firefox already has a default stun server in about:config
-        //  media.peerconnection.default_iceservers =
-        //  [{"url": "stun:stun.services.mozilla.com"}]
-        var servers = undefined;
-
-        //add same stun server for chrome
-        if(window.webkitRTCPeerConnection)
-            servers = {iceServers: [{urls: "stun:stun.services.mozilla.com"}]};
-
-        //construct a new RTCPeerConnection
-        var pc = new RTCPeerConnection(servers, mediaConstraints);
-
-        //listen for candidate events
-        pc.onicecandidate = function(ice){
-
-            //skip non-candidate events
-            if(ice.candidate){
-
-                //match just the IP address
-                var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
-                var ip_addr = ip_regex.exec(ice.candidate.candidate)[1];
-
-                //remove duplicates
-                if(ip_dups[ip_addr] === undefined)
-                    callback(ip_addr);
-
-                ip_dups[ip_addr] = true;
-            }
-        };
-
-        //create a bogus data channel
-        pc.createDataChannel("");
-
-        //create an offer sdp
-        pc.createOffer(function(result){
-
-            //trigger the stun server request
-            pc.setLocalDescription(result, function(){}, function(){});
-
-        }, function(){});
-    };
-
-    window.getLocalIP = function (callback) {
-        var localIPlist = [];
-
-        var ipRank = [192,10,172,254];
-
-        getIPs(function(ip) {
-            localIPlist.push({
-                ip: ip,
-                group: ip.split('.')[0]
-            });
+        var pc = new RTCPeerConnection({
+            // Don't specify any stun/turn servers, otherwise you will
+            // also find your public IP addresses.
+            iceServers: []
         });
 
-        // wait 50ms for all ip has got
-        setTimeout(function () {
-            // all lcoal ip should display , and then get the real local ip
-            localIPlist.sort(function (a, b) {
-                var rankA = ipRank.indexOf(Number(a.group));
-                var rankB = ipRank.indexOf(Number(b.group));
+        // Add a media line, this is needed to activate candidate gathering.
+        pc.createDataChannel('');
+        
+        // onicecandidate is triggered whenever a candidate has been found.
+        pc.onicecandidate = function(e) {
+            if (!e.candidate) { // Candidate gathering completed.
+                pc.close();
+                callback(ips[0]);
+                return;
+            }
+            var ip = /^candidate:.+ (\S+) \d+ typ/.exec(e.candidate.candidate)[1];
+            if (ips.indexOf(ip) == -1) // avoid duplicate entries (tcp/udp)
+                ips.push(ip);
+        };
 
-                if(rankA === -1) {
-                    return true;
-                }
-
-                return !(rankB === -1 || rankB > rankA);
-            });
-
-            callback(localIPlist[0]['ip']);
-        }, 50);
-    };
-}());
+        pc.createOffer(function(sdp) {
+            pc.setLocalDescription(sdp);
+        }, function onerror() {});
+    }
+}(window));
