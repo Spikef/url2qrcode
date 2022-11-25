@@ -3,14 +3,15 @@ html, body {
     padding: 0;
 }
 
-section {
+#container {
     width: 350px;
+    margin: 0 auto;
 }
 
 .qrcode {
     width: 300px;
     height: 300px;
-    margin: 25px 25px 25px 25px
+    margin: 25px;
 }
 
 .qrcode-image {

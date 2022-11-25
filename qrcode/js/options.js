@@ -1,70 +1,51 @@
 $(function () {
-    var defaultConfigs = {
-        match: ['localhost', '0.0.0.0', '127.0.0.1'],   // match replace list
-        switch: '1',                    // auto convert matched ip
-        autoip: '1',                    // auto get ip
-        target: '',
-        color: '#000000',
-        bgColor: '#ffffff',
-        imageSize: 300
-    };
-
-    // events
-    $('#transparent').on('click', function () {
-        $('#backColor').val('transparent');
-    });
-
-    $('#switch').on('change', function () {
-        var checked = $(this).is(':checked');
-        toggleSwitch(checked);
-    });
-
-    $('#reset').on('click', function () {
-        readConfigs(defaultConfigs);
-    });
-
-    $('#save').on('click', function () {
-        saveConfigs();
-    });
-
-    $('#back').on('click', function () {
-        window.history.back();
-    });
-
-    // init
-    var search = window.location.search;
-    if (~search.indexOf('from=qrcode')) {
-        $('#back').show();
-    }
-
-    try {
-        chrome.storage.local.get(['configs', 'ip'], function(result) {
-            var configs = $.extend({}, defaultConfigs, result.configs);
-
-            if (!configs.target) {
-                window.getLocalIP(function (ip) {
-                    configs.target = ip;
-
-                    readConfigs(configs)
-                });
-            } else {
-                readConfigs(configs);
-            }
+    (function bind() {
+        $('#transparent').on('click', function () {
+            $('#backColor').val('transparent');
         });
-    } catch (e) {
-        readConfigs(defaultConfigs);
-    }
 
-    function readConfigs(configs) {
+        $('#switch').on('change', function () {
+            const checked = $(this).is(':checked');
+            console.log('change', checked);
+            toggleSwitch(checked);
+        });
+
+        $('#reset').on('click', async function () {
+            await $.store.del($.store.KEYS.CONFIG);
+            const configs = await $.store.get($.store.KEYS.CONFIG);
+            console.log(configs);
+            updateConfigs(configs);
+        });
+
+        $('#save').on('click', function () {
+            submitConfigs();
+        });
+
+        $('#back').on('click', function () {
+            window.history.back();
+        });
+    })();
+
+    (async function init() {
+        const search = window.location.search;
+        if (~search.indexOf('from=qrcode')) {
+            $('#back').show();
+        }
+
+        const configs = await $.store.get($.store.KEYS.CONFIG);
+        updateConfigs(configs);
+    })();
+
+    function updateConfigs(configs) {
         $('#color').val(configs.color);
         $('#backColor').val(configs.bgColor);
-        $('#switch').attr('checked', configs.switch == '1').trigger('change');
-        $('[name=autoip][value=' + configs.autoip + ']').attr('checked', true);
+        $('#switch').attr('checked', configs.switch === '1').trigger('change');
+        $('[name=autoIp][value=' + configs.autoIp + ']').attr('checked', true);
         $('#target').val(configs.target);
         $('#match').val(configs.match.join('\n'));
 
-        var $foreBtn = $('.select-color.fore');
-        var $backBtn = $('.select-color.back');
+        const $foreBtn = $('.select-color.fore');
+        const $backBtn = $('.select-color.back');
 
         $foreBtn.find('i').css('background-color', configs.color);
         $backBtn.find('i').css('background-color', configs.bgColor);
@@ -89,8 +70,8 @@ $(function () {
                 $(this).ColorPickerSetColor($('#backColor').val());
             },
             onSubmit: function(hsb, hex, rgb, el) {
-                var color = '#' + hex;
-                var parent = $(el).parent();
+                const color = '#' + hex;
+                const parent = $(el).parent();
                 parent.find('input').val('#' + hex);
                 parent.find('i').css('background-color', color);
                 $(el).ColorPickerHide();
@@ -98,24 +79,23 @@ $(function () {
         });
     }
 
-    function saveConfigs() {
-        var configs = {
+    function submitConfigs() {
+        const configs = {
             color: $('#color').val(),
             bgColor: $('#backColor').val(),
             switch: $('#switch').is(':checked') ? '1' : '0',
-            autoip: $('[name=autoip]:checked').val(),
+            autoIp: $('[name=autoIp]:checked').val(),
             target: $('#target').val(),
             match: $('#match').val().split(/\r?\n/)
         };
 
-        try {
-            chrome.storage.local.set({configs: configs}, function () {
-                showSuccess();
+        $.store.set($.store.KEYS.CONFIG, configs)
+            .then(() => {
+                showResult('保存成功!');
+            })
+            .catch((err) => {
+                showResult('保存失败: ' + err.message);
             });
-        } catch (e) {
-            console.log(configs);
-            showSuccess();
-        }
     }
 
     function toggleSwitch(checked) {
@@ -126,10 +106,10 @@ $(function () {
         }
     }
 
-    function showSuccess() {
-        $('.save-success').fadeIn();
+    function showResult(message) {
+        $('#save-result').text(message).fadeIn();
         setTimeout(function () {
-            $('.save-success').fadeOut();
-        }, 2000);
+            $('#save-result').fadeOut();
+        }, 1000);
     }
 });

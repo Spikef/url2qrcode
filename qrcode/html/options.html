@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<section>
+<section id="container">
     <form class="form-horizontal">
         <div class="form-group">
             <label for="color" class="col-sm-2 control-label">颜色</label>
@@ -46,10 +46,10 @@
                 <label class="col-sm-2 control-label">转换结果</label>
                 <div class="col-sm-10">
                     <label class="radio-inline">
-                        <input type="radio" name="autoip" value="0"> 使用指定的输入文本
+                        <input type="radio" name="autoIp" value="0"> 使用指定的输入文本
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" name="autoip" value="1"> 自动侦测本机ip地址
+                        <input type="radio" name="autoIp" value="1"> 自动侦测本机ip地址
                     </label>
                 </div>
             </div>
@@ -76,16 +76,16 @@
 
                 <div class="pull-right text-info" id="back">返回</div>
             </div>
-            <div class="col-sm-offset-2 col-sm-10">
-                <p class="help-block text-success save-success">保存成功!</p>
-            </div>
         </div>
     </form>
+
+    <div class="alert alert-success" id="save-result">保存成功!</div>
 </section>
 
-<script src="../js/jquery.js"></script>
-<script src="../js/ip.js"></script>
-<script src="../js/colorpicker.js"></script>
+<script src="../js/lib/jquery.js"></script>
+<script src="../js/lib/jquery.colorpicker.js"></script>
+<script src="../js/lib/jquery.ip.js"></script>
+<script src="../js/lib/jquery.store.js"></script>
 <script src="../js/options.js"></script>
 </body>
 </html>

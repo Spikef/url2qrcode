@@ -1,6 +1,13 @@
-form {
-    margin: 15px;
-    width: 520px;
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+#container {
+    position: relative;
+    width: 550px;
+    padding: 15px;
+    margin: 0 auto;
 }
 
 #transparent {
@@ -30,8 +37,13 @@ form {
     margin-right: 10px;
 }
 
-.save-success {
+#save-result {
     display: none;
+    position: absolute;
+    z-index: 100;
+    bottom: 50px;
+    left: 15px;
+    width: 520px;
 }
 
 #back {

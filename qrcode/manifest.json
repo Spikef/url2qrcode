@@ -2,10 +2,10 @@
     "name": "Url2QRCode",
     "version": "1.0.0",
     "description": "将当前页面的Url转换为二维码.",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "permissions": [ "notifications", "tabs", "storage" ],
     "options_page": "html/options.html",
-    "browser_action": {
+    "action": {
         "default_icon": "icon.png" ,
         "default_title": "Url2QRCode",
         "default_popup": "html/popup.html"
